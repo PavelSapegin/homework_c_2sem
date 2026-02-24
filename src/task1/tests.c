@@ -2,7 +2,7 @@
 #include <assert.h>
 #define MAX_BUFF 4096
 
-int create_test_csv(char filename[], char content[])
+int createTestCsv(char filename[], char content[])
 {
     FILE* fp = fopen(filename, "w");
     if (fp == NULL) {
@@ -16,7 +16,7 @@ int create_test_csv(char filename[], char content[])
     return 0;
 }
 
-int check_file_content(char filename[], char expected[])
+int checkFileContent(char filename[], char expected[])
 {
     FILE* fp = fopen(filename, "r");
     if (fp == NULL) {
@@ -26,7 +26,7 @@ int check_file_content(char filename[], char expected[])
     }
 
     char buff[MAX_BUFF];
-    int len = fread(buff, 1, sizeof(buff) - 1, fp);
+    size_t len = fread(buff, 1, sizeof(buff) - 1, fp);
     buff[len] = '\0';
 
     fclose(fp);
@@ -41,27 +41,27 @@ int check_file_content(char filename[], char expected[])
     return 0;
 }
 
-void test_is_num()
+void testIsNum(void)
 {
-    printf("[RUNNING] Test is_num:\n");
+    printf("[RUNNING] Test isNum:\n");
 
-    assert(is_num("123") == 1);
-    assert(is_num("42.1") == 1);
-    assert(is_num("-12") == 1);
-    assert(is_num("0.0") == 1);
+    assert(isNum("123") == 1);
+    assert(isNum("42.1") == 1);
+    assert(isNum("-12") == 1);
+    assert(isNum("0.0") == 1);
 
-    assert(is_num("") == 0);
-    assert(is_num("testing thus") == 0);
-    assert(is_num("4343adsds121") == 0);
-    assert(is_num("aaaaa323232") == 0);
-    assert(is_num(NULL) == 0);
+    assert(isNum("") == 0);
+    assert(isNum("testing thus") == 0);
+    assert(isNum("4343adsds121") == 0);
+    assert(isNum("aaaaa323232") == 0);
+    assert(isNum(NULL) == 0);
 
-    printf("[SUCCESS] Test is_num passed!\n");
+    printf("[SUCCESS] Test isNum passed!\n");
 }
 
-void test_base_read_csv()
+void testBaseReadCsv(void)
 {
-    printf("[RUNNING] Test base read_csv:\n");
+    printf("[RUNNING] Test base readCsv:\n");
 
     // TEST WITH BIAS = 2!!!!!
 
@@ -80,18 +80,18 @@ void test_base_read_csv()
                       "║other text         ║             3║\n"
                       "╚═══════════════════╩══════════════╝\n";
 
-    create_test_csv("test_input.csv", input);
+    createTestCsv("test_input.csv", input);
 
-    int result = read_csv("test_input.csv", "test_output.txt");
+    int result = readCsv("test_input.csv", "test_output.txt");
 
     assert(result == 0);
 
-    check_file_content("test_output.txt", expected);
+    checkFileContent("test_output.txt", expected);
 
     printf("[SUCCESS] Test base read csv passed!\n");
 }
 
-void test_empty_val_read_csv()
+void testEmptyValReadCsv(void)
 {
     printf("[RUNNING] Test empty values read csv:\n");
 
@@ -107,23 +107,23 @@ void test_empty_val_read_csv()
                       "║    ║Bob   ║       ║\n"
                       "╚════╩══════╩═══════╝\n";
 
-    create_test_csv("test_input.csv", input);
+    createTestCsv("test_input.csv", input);
 
-    int result = read_csv("test_input.csv", "test_output.csv");
+    int result = readCsv("test_input.csv", "test_output.csv");
     assert(result == 0);
 
-    check_file_content("test_output.csv", expected);
+    checkFileContent("test_output.csv", expected);
 
     printf("[SUCCESS] Test empty values read csv passed!\n");
 }
 
-void run_tests()
+void runTests(void)
 {
     printf("[RUNNING] Starting Tests!\n");
 
-    test_is_num();
-    test_base_read_csv();
-    test_empty_val_read_csv();
+    testIsNum();
+    testBaseReadCsv();
+    testEmptyValReadCsv();
 
     printf("[SUCCESS] ALL Tests passed!\n");
 }

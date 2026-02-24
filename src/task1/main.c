@@ -3,9 +3,9 @@
 int main(int argc, char* argv[])
 {
     if ((argc > 1) && (strcmp(argv[1], "--test") == 0)) {
-        run_tests();
+        runTests();
         return 0;
     }
-    read_csv("../input.csv", "../output.txt");
+    readCsv("../input.csv", "../output.txt");
     return 0;
 }

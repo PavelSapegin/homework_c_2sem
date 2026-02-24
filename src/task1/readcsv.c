@@ -6,7 +6,7 @@
 #define MAX_BUFF 4096
 #define BIAS 2
 
-int is_num(char s[])
+int isNum(char s[])
 {
     if ((s == NULL) || (*s == '\0'))
         return 0;
@@ -16,7 +16,7 @@ int is_num(char s[])
     return *p == '\0';
 }
 
-void print_line(FILE* fpwr, int widths[], int cols_count, Len type)
+void printLine(FILE* fpwr, const size_t widths[], int colsCount, Len type)
 {
     char* chars[3][4] = {
         { "╔", "═", "╦", "╗" }, // Header
@@ -25,59 +25,59 @@ void print_line(FILE* fpwr, int widths[], int cols_count, Len type)
     };
 
     fputs(chars[type][0], fpwr);
-    for (int col_idx = 0; col_idx < cols_count; ++col_idx) {
-        for (int i = 0; i < widths[col_idx]; ++i) {
+    for (int colIdx = 0; colIdx < colsCount; ++colIdx) {
+        for (size_t i = 0; i < widths[colIdx]; ++i) {
             fputs(chars[type][1], fpwr);
         }
 
-        if (col_idx < cols_count - 1) {
+        if (colIdx < colsCount - 1) {
             fputs(chars[type][2], fpwr);
         }
     }
     fprintf(fpwr, "%s\n", chars[type][3]);
 }
 
-void max_width(FILE* fp, int widths[], int* cols_count)
+void maxWidth(FILE* fp, size_t widths[], int* colsCount)
 {
     char buff[MAX_BUFF];
-    long st_pos = ftell(fp);
+    long stPos = ftell(fp);
 
     while (fgets(buff, sizeof(buff), fp)) {
-        int col_idx = 0;
+        int colIdx = 0;
         buff[strcspn(buff, "\r\n")] = 0; //*
-        int new_len;
+        size_t newLen;
 
         char* start = buff;
         char* end = strchr(start, ',');
 
-        while ((end != NULL) && (col_idx < MAX_COLS)) {
+        while ((end != NULL) && (colIdx < MAX_COLS)) {
             *end = '\0';
 
-            new_len = strlen(start);
+            newLen = strlen(start);
 
-            if (new_len > widths[col_idx])
-                widths[col_idx] = new_len + BIAS;
+            if (newLen > widths[colIdx])
+                widths[colIdx] = newLen + BIAS;
 
-            col_idx++;
+            colIdx++;
             start = end + 1;
             end = strchr(start, ',');
         }
 
         // Последний столбец обрабатываем отдельно
-        new_len = strlen(start);
-        if (new_len > widths[col_idx])
-            widths[col_idx] = new_len + BIAS;
-        col_idx++;
+        newLen = strlen(start);
+        if (newLen > widths[colIdx])
+            widths[colIdx] = newLen + BIAS;
+        colIdx++;
 
-        if (col_idx > *cols_count) {
-            *cols_count = col_idx;
+        if (colIdx > *colsCount) {
+            *colsCount = colIdx;
         }
     }
 
-    fseek(fp, st_pos, SEEK_SET);
+    fseek(fp, stPos, SEEK_SET);
 }
 
-void print_row(FILE* fpwr, char line[], int cols_count, int widths[], int is_header)
+void printRow(FILE* fpwr, char line[], int colsCount, size_t widths[], int isHeader)
 {
     line[strcspn(line, "\r\n")] = 0;
 
@@ -85,17 +85,17 @@ void print_row(FILE* fpwr, char line[], int cols_count, int widths[], int is_hea
     char* end = strchr(start, ',');
 
     fprintf(fpwr, "║");
-    for (int col_idx = 0; col_idx < cols_count; ++col_idx) {
+    for (int colIdx = 0; colIdx < colsCount; ++colIdx) {
         if (end != NULL) {
             *end = '\0';
         }
 
         if (start == NULL) {
-            fprintf(fpwr, "%-*s", widths[col_idx], " ");
-        } else if ((is_num(start)) && !(is_header)) {
-            fprintf(fpwr, "%*s", widths[col_idx], start);
+            fprintf(fpwr, "%-*s", (int)widths[colIdx], " ");
+        } else if ((isNum(start)) && !(isHeader)) {
+            fprintf(fpwr, "%*s", (int)widths[colIdx], start);
         } else {
-            fprintf(fpwr, "%-*s", widths[col_idx], start);
+            fprintf(fpwr, "%-*s", (int)widths[colIdx], start);
         }
         fprintf(fpwr, "║");
 
@@ -108,7 +108,7 @@ void print_row(FILE* fpwr, char line[], int cols_count, int widths[], int is_hea
     fprintf(fpwr, "\n");
 }
 
-int read_csv(char fileread[], char filewrite[])
+int readCsv(char fileread[], char filewrite[])
 {
     FILE* fp = fopen(fileread, "r");
     FILE* fpwr = fopen(filewrite, "w");
@@ -118,25 +118,25 @@ int read_csv(char fileread[], char filewrite[])
         return -1;
     }
 
-    int is_header = 1;
-    int cols_count = 0;
-    long st_pos = ftell(fpwr);
-    int widths[MAX_COLS] = { 0 };
+    int isHeader = 1;
+    int colsCount = 0;
+    long stPos = ftell(fpwr);
+    size_t widths[MAX_COLS] = { 0 };
     char buff[MAX_BUFF];
 
-    max_width(fp, widths, &cols_count);
+    maxWidth(fp, widths, &colsCount);
 
-    print_line(fpwr, widths, cols_count, Header);
+    printLine(fpwr, widths, colsCount, Header);
 
     while (fgets(buff, sizeof(buff), fp)) {
-        print_row(fpwr, buff, cols_count, widths, is_header);
-        if (is_header == 1)
-            is_header = 0;
-        st_pos = ftell(fpwr);
-        print_line(fpwr, widths, cols_count, Body);
+        printRow(fpwr, buff, colsCount, widths, isHeader);
+        if (isHeader == 1)
+            isHeader = 0;
+        stPos = ftell(fpwr);
+        printLine(fpwr, widths, colsCount, Body);
     }
-    fseek(fpwr, st_pos, SEEK_SET);
-    print_line(fpwr, widths, cols_count, Footer);
+    fseek(fpwr, stPos, SEEK_SET);
+    printLine(fpwr, widths, colsCount, Footer);
 
     fclose(fp);
     fclose(fpwr);
