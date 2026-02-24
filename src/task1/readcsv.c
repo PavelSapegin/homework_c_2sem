@@ -3,15 +3,18 @@
 #include <stdlib.h>
 #include "readcsv.h"
 #define MAX_COLS 20
-#define MAX_BUFF 1024
-#define BIAS 10
+#define MAX_BUFF 4096
+#define BIAS 2
 
 
 int is_num(char s[])
 {
+    if ((s == NULL) || (*s == '\0'))
+        return 0;
+
     char *p;
     strtod(s, &p);
-    return *p == 0;
+    return *p == '\0';
 }
 
 void print_line(FILE *fpwr, int widths[], int cols_count, Len type)
@@ -46,7 +49,7 @@ void max_width(FILE *fp, int widths[], int *cols_count)
     while (fgets(buff, sizeof(buff), fp))
     {
         int col_idx = 0;
-        buff[strcspn(buff, "\n")] = 0; //*
+        buff[strcspn(buff, "\r\n")] = 0; //*
         int new_len;
 
         char *start = buff;
@@ -81,14 +84,14 @@ void max_width(FILE *fp, int widths[], int *cols_count)
     fseek(fp, st_pos, SEEK_SET);
 }
 
-void print_row(FILE *fpwr, char line[], int cols_count, int widths[])
+void print_row(FILE *fpwr, char line[], int cols_count, int widths[],int is_header)
 {
-   line[strcspn(line,"\n")] = 0;
+   line[strcspn(line,"\r\n")] = 0;
 
     char *start = line;
     char *end = strchr(start, ',');
 
-    fprintf(fpwr, "⁠║");
+    fprintf(fpwr, "║");
     for (int col_idx = 0; col_idx < cols_count; ++col_idx)
     {
         if (end != NULL)
@@ -100,7 +103,7 @@ void print_row(FILE *fpwr, char line[], int cols_count, int widths[])
         {
             fprintf(fpwr, "%-*s", widths[col_idx], " ");
         }
-        else if (is_num(start))
+        else if ((is_num(start)) && !(is_header))
         {
             fprintf(fpwr, "%*s", widths[col_idx], start);
         }
@@ -108,13 +111,15 @@ void print_row(FILE *fpwr, char line[], int cols_count, int widths[])
         {
             fprintf(fpwr, "%-*s", widths[col_idx], start);
         }
-        fprintf(fpwr, "⁠║");
+        fprintf(fpwr, "║");
 
         if (end != NULL)
         {
             start = end + 1;
             end = strchr(start, ',');
         }
+        else
+            start = NULL;
     }
     fprintf(fpwr, "\n");
 }
@@ -130,6 +135,7 @@ int read_csv(char fileread[], char filewrite[])
         return -1;
     }
 
+    int is_header = 1;
     int cols_count = 0;
     long st_pos = ftell(fpwr);
     int widths[MAX_COLS] = {0};
@@ -141,7 +147,9 @@ int read_csv(char fileread[], char filewrite[])
 
     while (fgets(buff, sizeof(buff), fp))
     {
-        print_row(fpwr, buff, cols_count, widths);
+        print_row(fpwr, buff, cols_count, widths,is_header);
+        if (is_header == 1)
+            is_header = 0;
         st_pos = ftell(fpwr);
         print_line(fpwr, widths, cols_count, Body);
     }
