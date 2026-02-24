@@ -4,9 +4,8 @@
 
 int create_test_csv(char filename[], char content[])
 {
-    FILE *fp = fopen(filename, "w");
-    if (fp == NULL)
-    {
+    FILE* fp = fopen(filename, "w");
+    if (fp == NULL) {
         printf("[ERROR] Can't create a test csv file");
         assert(fp != NULL);
         return -1;
@@ -19,9 +18,8 @@ int create_test_csv(char filename[], char content[])
 
 int check_file_content(char filename[], char expected[])
 {
-    FILE *fp = fopen(filename, "r");
-    if (fp == NULL)
-    {
+    FILE* fp = fopen(filename, "r");
+    if (fp == NULL) {
         printf("[ERROR] Can't open a test csv file");
         assert(fp != NULL);
         return -1;
@@ -33,8 +31,7 @@ int check_file_content(char filename[], char expected[])
 
     fclose(fp);
     int result = (strcmp(buff, expected) != 0);
-    if (result != 0)
-    {
+    if (result != 0) {
         printf("[FAIL] File content mismatch.\n");
         printf("[EXPECTED]\n%s\n", expected);
         printf("[GET]\n%s\n", buff);
@@ -68,22 +65,20 @@ void test_base_read_csv()
 
     // TEST WITH BIAS = 2!!!!!
 
-    char input[] =
-        "Test field 1,Test field 2\n"
-        "test,123\n"
-        "long string test!,28.7\n"
-        "other text,3\n";
+    char input[] = "Test field 1,Test field 2\n"
+                   "test,123\n"
+                   "long string test!,28.7\n"
+                   "other text,3\n";
 
-    char expected[] =
-        "╔═══════════════════╦══════════════╗\n"
-        "║Test field 1       ║Test field 2  ║\n"
-        "╠═══════════════════╬══════════════╣\n"
-        "║test               ║           123║\n"
-        "╠═══════════════════╬══════════════╣\n"
-        "║long string test!  ║          28.7║\n"
-        "╠═══════════════════╬══════════════╣\n"
-        "║other text         ║             3║\n"
-        "╚═══════════════════╩══════════════╝\n";
+    char expected[] = "╔═══════════════════╦══════════════╗\n"
+                      "║Test field 1       ║Test field 2  ║\n"
+                      "╠═══════════════════╬══════════════╣\n"
+                      "║test               ║           123║\n"
+                      "╠═══════════════════╬══════════════╣\n"
+                      "║long string test!  ║          28.7║\n"
+                      "╠═══════════════════╬══════════════╣\n"
+                      "║other text         ║             3║\n"
+                      "╚═══════════════════╩══════════════╝\n";
 
     create_test_csv("test_input.csv", input);
 
@@ -100,26 +95,24 @@ void test_empty_val_read_csv()
 {
     printf("[RUNNING] Test empty values read csv:\n");
 
-    char input[] =
-        "ID,Name,Score\n"
-        "1,,99.32\n"
-        ",Bob,\n";
+    char input[] = "ID,Name,Score\n"
+                   "1,,99.32\n"
+                   ",Bob,\n";
 
-    char expected[] =
-        "╔════╦══════╦═══════╗\n"
-        "║ID  ║Name  ║Score  ║\n"
-        "╠════╬══════╬═══════╣\n"
-        "║   1║      ║  99.32║\n"
-        "╠════╬══════╬═══════╣\n"
-        "║    ║Bob   ║       ║\n"
-        "╚════╩══════╩═══════╝\n";
+    char expected[] = "╔════╦══════╦═══════╗\n"
+                      "║ID  ║Name  ║Score  ║\n"
+                      "╠════╬══════╬═══════╣\n"
+                      "║   1║      ║  99.32║\n"
+                      "╠════╬══════╬═══════╣\n"
+                      "║    ║Bob   ║       ║\n"
+                      "╚════╩══════╩═══════╝\n";
 
-    create_test_csv("test_input.csv",input);
+    create_test_csv("test_input.csv", input);
 
-    int result = read_csv("test_input.csv","test_output.csv");
+    int result = read_csv("test_input.csv", "test_output.csv");
     assert(result == 0);
 
-    check_file_content("test_output.csv",expected);
+    check_file_content("test_output.csv", expected);
 
     printf("[SUCCESS] Test empty values read csv passed!\n");
 }

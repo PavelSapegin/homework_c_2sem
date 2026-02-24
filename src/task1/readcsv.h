@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-typedef enum
-{
+typedef enum {
     Header,
     Body,
     Footer,
@@ -10,9 +9,9 @@ typedef enum
 
 // readcsv
 int is_num(char s[]);
-void print_line(FILE *fpwr, int widths[], int cols_count, Len type);
-void max_width(FILE *fp, int widths[], int *cols_count);
-void print_row(FILE *fpwr, char line[], int cols_count, int widths[],int is_header);
+void print_line(FILE* fpwr, int widths[], int cols_count, Len type);
+void max_width(FILE* fp, int widths[], int* cols_count);
+void print_row(FILE* fpwr, char line[], int cols_count, int widths[], int is_header);
 int read_csv(char fileread[], char filewrite[]);
 
 // tests
