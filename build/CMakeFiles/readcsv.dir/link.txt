@@ -1,1 +1,0 @@
-/usr/bin/gcc -g CMakeFiles/readcsv.dir/src/task1/readcsv.c.o CMakeFiles/readcsv.dir/src/task1/main.c.o CMakeFiles/readcsv.dir/src/task1/tests.c.o -o readcsv 

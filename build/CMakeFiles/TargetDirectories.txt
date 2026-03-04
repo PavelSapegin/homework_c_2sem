@@ -1,3 +1,0 @@
-/home/bober/Desktop/mywork/homework_c_2sem/build/CMakeFiles/readcsv.dir
-/home/bober/Desktop/mywork/homework_c_2sem/build/CMakeFiles/edit_cache.dir
-/home/bober/Desktop/mywork/homework_c_2sem/build/CMakeFiles/rebuild_cache.dir
