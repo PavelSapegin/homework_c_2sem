@@ -44,7 +44,7 @@ void maxWidth(FILE* fp, size_t widths[], int* colsCount)
 
     while (fgets(buff, sizeof(buff), fp)) {
         int colIdx = 0;
-        buff[strcspn(buff, "\r\n")] = 0; //*
+        buff[strcspn(buff, "\r\n")] = 0;
         size_t newLen;
 
         char* start = buff;
@@ -64,10 +64,12 @@ void maxWidth(FILE* fp, size_t widths[], int* colsCount)
         }
 
         // Последний столбец обрабатываем отдельно
-        newLen = strlen(start);
-        if (newLen > widths[colIdx])
-            widths[colIdx] = newLen + BIAS;
-        colIdx++;
+        if (colIdx < MAX_COLS) {
+            newLen = strlen(start);
+            if (newLen > widths[colIdx])
+                widths[colIdx] = newLen + BIAS;
+            colIdx++;
+        }
 
         if (colIdx > *colsCount) {
             *colsCount = colIdx;
@@ -77,8 +79,7 @@ void maxWidth(FILE* fp, size_t widths[], int* colsCount)
     fseek(fp, stPos, SEEK_SET);
 }
 
-void printRow(FILE* fpwr, char line[], int colsCount, size_t widths[],
-    int isHeader)
+void printRow(FILE* fpwr, char line[], int colsCount, size_t widths[], int isHeader)
 {
     line[strcspn(line, "\r\n")] = 0;
 
@@ -91,9 +92,7 @@ void printRow(FILE* fpwr, char line[], int colsCount, size_t widths[],
             *end = '\0';
         }
 
-        if (start == NULL) {
-            fprintf(fpwr, "%-*s", (int)widths[colIdx], " ");
-        } else if ((isNum(start)) && !(isHeader)) {
+        if ((isNum(start)) && !(isHeader)) {
             fprintf(fpwr, "%*s", (int)widths[colIdx], start);
         } else {
             fprintf(fpwr, "%-*s", (int)widths[colIdx], start);
@@ -116,12 +115,16 @@ int readCsv(char fileread[], char filewrite[])
 
     if ((fp == NULL) || (fpwr == NULL)) {
         printf("Error of opening reading or writing file\n");
+        if (fp)
+            fclose(fp);
+        if (fpwr)
+            fclose(fpwr);
         return -1;
     }
 
     int isHeader = 1;
+    int isFirstRow = 1;
     int colsCount = 0;
-    long stPos = ftell(fpwr);
     size_t widths[MAX_COLS] = { 0 };
     char buff[MAX_BUFF];
 
@@ -130,13 +133,12 @@ int readCsv(char fileread[], char filewrite[])
     printLine(fpwr, widths, colsCount, Header);
 
     while (fgets(buff, sizeof(buff), fp)) {
+        if (!isFirstRow)
+            printLine(fpwr, widths, colsCount, Body);
         printRow(fpwr, buff, colsCount, widths, isHeader);
-        if (isHeader == 1)
-            isHeader = 0;
-        stPos = ftell(fpwr);
-        printLine(fpwr, widths, colsCount, Body);
+        isFirstRow = 0;
+        isHeader = 0;
     }
-    fseek(fpwr, stPos, SEEK_SET);
     printLine(fpwr, widths, colsCount, Footer);
 
     fclose(fp);
