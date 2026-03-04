@@ -15,7 +15,6 @@ void printRow(FILE* fpwr, char line[], int colsCount, size_t widths[],
     int isHeader);
 int readCsv(char fileread[], char filewrite[]);
 
-
 // tests
 int createTestCsv(char filename[], char content[]);
 int checkFileContent(char filename[], char expected[]);

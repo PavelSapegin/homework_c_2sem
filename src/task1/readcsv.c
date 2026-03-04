@@ -34,7 +34,7 @@ void printLine(FILE* fpwr, const size_t widths[], int colsCount, Len type)
             fputs(chars[type][2], fpwr);
         }
     }
-    
+
     fprintf(fpwr, "%s\n", chars[type][3]);
 }
 
