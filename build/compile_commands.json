@@ -1,0 +1,20 @@
+[
+{
+  "directory": "/home/bober/Desktop/mywork/homework_c_2sem/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wpedantic -o CMakeFiles/readcsv.dir/src/task1/readcsv.c.o -c /home/bober/Desktop/mywork/homework_c_2sem/src/task1/readcsv.c",
+  "file": "/home/bober/Desktop/mywork/homework_c_2sem/src/task1/readcsv.c",
+  "output": "CMakeFiles/readcsv.dir/src/task1/readcsv.c.o"
+},
+{
+  "directory": "/home/bober/Desktop/mywork/homework_c_2sem/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wpedantic -o CMakeFiles/readcsv.dir/src/task1/main.c.o -c /home/bober/Desktop/mywork/homework_c_2sem/src/task1/main.c",
+  "file": "/home/bober/Desktop/mywork/homework_c_2sem/src/task1/main.c",
+  "output": "CMakeFiles/readcsv.dir/src/task1/main.c.o"
+},
+{
+  "directory": "/home/bober/Desktop/mywork/homework_c_2sem/build",
+  "command": "/usr/bin/gcc   -g -Wall -Wextra -Wpedantic -o CMakeFiles/readcsv.dir/src/task1/tests.c.o -c /home/bober/Desktop/mywork/homework_c_2sem/src/task1/tests.c",
+  "file": "/home/bober/Desktop/mywork/homework_c_2sem/src/task1/tests.c",
+  "output": "CMakeFiles/readcsv.dir/src/task1/tests.c.o"
+}
+]
