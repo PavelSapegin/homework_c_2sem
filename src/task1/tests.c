@@ -63,6 +63,7 @@ void testBaseReadCsv(void)
 {
     printf("[RUNNING] Test base readCsv:\n");
 
+    
     // TEST WITH BIAS = 2!!!!!
 
     char input[] = "Test field 1,Test field 2\n"

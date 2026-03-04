@@ -6,6 +6,7 @@ int main(int argc, char* argv[])
         runTests();
         return 0;
     }
+    
     readCsv("../input.csv", "../output.txt");
     return 0;
 }
