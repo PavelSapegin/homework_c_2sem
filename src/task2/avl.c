@@ -20,8 +20,8 @@ Node* createNode(char code[], char name[])
         return NULL;
     }
 
-    strcpy(newNode->code, code);
-    strcpy(newNode->name, name);
+    strlcpy(newNode->code, code,sizeof(newNode->code));
+    strlcpy(newNode->name, name,sizeof(newNode->name));
     newNode->left = NULL;
     newNode->right = NULL;
     newNode->height = 0;
@@ -156,8 +156,8 @@ Node* deleteNode(Node* node, char code[])
             return NULL;
         } else {
             Node* minRightNode = findMin(node->right);
-            strcpy(node->code, minRightNode->code);
-            strcpy(node->name, minRightNode->name);
+            strlcpy(node->code, minRightNode->code,sizeof(node->code));
+            strlcpy(node->name, minRightNode->name,sizeof(node->name));
             node->right = deleteNode(node->right, minRightNode->code);
             updateHeight(node);
             node = balance(node);
