@@ -1,3 +1,5 @@
+#pragma once
+#include <stdio.h>
 typedef struct Node {
     char* code;
     char* name;
@@ -24,3 +26,8 @@ Node *findNode(Node *node, char code[]);
 void freeNode(Node *node);
 AVL* add(AVL* tree, char str[]);
 void freeAVL(AVL *tree);
+AVL* load(char filepath[]);
+char *find(AVL* tree, char code[]);
+AVL* delete(AVL *tree, char code[]);
+void saveNode(Node *node, FILE* fp);
+void save(AVL* tree, char filepath[]);

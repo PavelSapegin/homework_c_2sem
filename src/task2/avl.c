@@ -117,6 +117,8 @@ Node* insertNode(Node* node, char code[], char name[])
 
 Node* findMin(Node *node)
 {
+    if (node == NULL)
+        return NULL;
     while (node->left != NULL)
     {
         node = node->left;
@@ -165,6 +167,7 @@ Node *deleteNode(Node *node, char code[])
         {
             Node *minRightNode = findMin(node->right);
             strcpy(node->code,minRightNode->code);
+            strcpy(node->name,minRightNode->name);
             node->right = deleteNode(node->right,minRightNode->code);
             updateHeight(node);
             node = balance(node);
