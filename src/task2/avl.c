@@ -1,7 +1,8 @@
 #include "avl.h"
-#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-Node* createNode(char* code)
+Node* createNode(char code[], char name[])
 {
     Node* newNode = malloc(sizeof(Node));
 
@@ -9,11 +10,18 @@ Node* createNode(char* code)
         return NULL;
 
     newNode->code = malloc(strlen(code) + 1);
+    newNode->name = malloc(strlen(name) + 1);
     if (newNode->code == NULL) {
         free(newNode);
         return NULL;
     }
+    if (newNode->name == NULL){
+        free(newNode);
+        return NULL;
+    }
+
     strcpy(newNode->code, code);
+    strcpy(newNode->name,name);
     newNode->left = NULL;
     newNode->right = NULL;
     newNode->height = 0;
@@ -35,7 +43,7 @@ void updateHeight(Node* node)
     }
 }
 
-Node* rotate_left(Node* node)
+Node* rotateLeft(Node* node)
 {
     Node* a = node;
     Node* b = a->right;
@@ -48,7 +56,7 @@ Node* rotate_left(Node* node)
     return b;
 }
 
-Node* rotate_right(Node* node)
+Node* rotateRight(Node* node)
 {
     Node* a = node;
     Node* b = a->left;
@@ -69,37 +77,37 @@ Node* balance(Node* node)
     int diff = getHeight(node->right) - getHeight(node->left);
 
     if ((diff > 1) && (node->right)) {
-        int child_diff = getHeight(node->right->right) - getHeight(node->right->left);
-        if (child_diff < 0)
-            node->right = rotate_right(node->right);
-        node = rotate_left(node);
+        int childDiff = getHeight(node->right->right) - getHeight(node->right->left);
+        if (childDiff < 0)
+            node->right = rotateRight(node->right);
+        node = rotateLeft(node);
 
     }
 
     else if ((diff < -1) && (node->left)) {
-        int child_diff = getHeight(node->left->right) - getHeight(node->left->left);
-        if (child_diff > 0)
-            node->left = rotate_left(node->left);
-        node = rotate_right(node);
+        int childDiff = getHeight(node->left->right) - getHeight(node->left->left);
+        if (childDiff > 0)
+            node->left = rotateLeft(node->left);
+        node = rotateRight(node);
     }
 
     return node;
 }
 
-Node* insertNode(Node* node, char* code)
+Node* insertNode(Node* node, char code[], char name[])
 {
     if (node == NULL) {
-        return createNode(code);
+        return createNode(code, name);
     }
 
-    else if (strcmp(node->code, code) <= 0) {
+    else if (strcmp(node->code, code) < 0) {
 
-        node->right = insertNode(node->right, code);
+        node->right = insertNode(node->right, code, name);
     }
 
     else {
 
-        node->left = insertNode(node->left, code);
+        node->left = insertNode(node->left, code, name);
     }
 
     updateHeight(node);
@@ -120,7 +128,11 @@ Node* findMin(Node *node)
 void freeNode(Node *node)
 {
     if (node)
+    {
         free(node->code);
+        free(node->name);
+    }
+
     free(node);
 }
 
@@ -151,9 +163,9 @@ Node *deleteNode(Node *node, char code[])
         }
         else
         {
-            Node *min_right_node = findMin(node->right);
-            strcpy(node->code,min_right_node->code);
-            node->right = deleteNode(node->right,min_right_node->code);
+            Node *minRightNode = findMin(node->right);
+            strcpy(node->code,minRightNode->code);
+            node->right = deleteNode(node->right,minRightNode->code);
             updateHeight(node);
             node = balance(node);
             return node;
@@ -176,18 +188,65 @@ Node *deleteNode(Node *node, char code[])
 
 }
 
-void avlInsert(AVL* tree, char code[])
+Node *findNode(Node *node, char code[])
 {
-    if (tree == NULL)
-        return;
+    if (node == NULL)
+    {
+        return NULL;
+    }
 
-    tree->root = insertNode(tree->root, code);
+    int result = strcmp(node->code,code);
+    if (result == 0)
+    {
+        return node;
+    }
+    else if (result < 0)
+    {
+        return findNode(node->right,code);
+    }
+    else
+    {
+        return findNode(node->left,code);
+    }
 }
 
-void avlDelete(AVL *tree, char code[])
+AVL* avlInsert(AVL* tree,char code[], char name[])
 {
     if (tree == NULL)
-        return;
-    
+        return NULL;
+
+    tree->root = insertNode(tree->root, code, name);
+    return tree;
+}
+
+Node *avlFindNode(AVL *tree, char code[])
+{
+    return findNode(tree->root, code);
+}
+
+AVL* avlDeleteNode(AVL *tree, char code[])
+{
+    if (tree == NULL)
+        return NULL;
     tree->root = deleteNode(tree->root,code);
+    return tree;
+}
+
+void freeAllNodes(Node *node)
+{
+    if (node != NULL)
+    {
+        freeAllNodes(node->left);
+        freeAllNodes(node->right);
+    }
+    freeNode(node);
+}
+
+void freeAVL(AVL *tree)
+{
+    if (tree != NULL)
+    {
+        freeAllNodes(tree->root);
+    }
+    free(tree);
 }
