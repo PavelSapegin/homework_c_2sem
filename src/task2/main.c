@@ -9,6 +9,12 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+    if (strcmp(argv[1],"--test") == 0)
+    {
+        runTests();
+        return 0;
+    }
+
     AVL* tree = load(argv[1]);
     if (tree == NULL) {
         printf("Error of opening file\n");

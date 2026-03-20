@@ -1,6 +1,5 @@
 #include "avl.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 AVL* load(char filepath[])
@@ -9,10 +8,7 @@ AVL* load(char filepath[])
     if (fp == NULL)
         return NULL;
 
-    AVL* tree = malloc(sizeof(AVL));
-    if (tree == NULL)
-        return NULL;
-    tree->root = NULL;
+    AVL *tree = createAVL();
 
     char buff[1024];
     while (fgets(buff, sizeof(buff), fp)) {

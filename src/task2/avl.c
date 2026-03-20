@@ -9,8 +9,10 @@ Node* createNode(char code[], char name[])
     if (newNode == NULL)
         return NULL;
 
-    newNode->code = malloc(strlen(code) + 1);
-    newNode->name = malloc(strlen(name) + 1);
+    size_t codeSize = strlen(code) + 1;
+    size_t nameSize = strlen(name) + 1;
+    newNode->code = malloc(codeSize);
+    newNode->name = malloc(nameSize);
     if (newNode->code == NULL) {
         free(newNode);
         return NULL;
@@ -21,11 +23,11 @@ Node* createNode(char code[], char name[])
         return NULL;
     }
 
-    strlcpy(newNode->code, code, strlen(newNode->code) + 1);
-    strlcpy(newNode->name, name, strlen(newNode->name) + 1);
+    strlcpy(newNode->code, code, codeSize);
+    strlcpy(newNode->name, name, nameSize);
     newNode->left = NULL;
     newNode->right = NULL;
-    newNode->height = 0;
+    newNode->height = 1;
 
     return newNode;
 }
@@ -178,8 +180,8 @@ Node* deleteNode(Node* node, char code[])
                 return NULL;
             }
             
-            strlcpy(node->code, minRightNode->code, strlen(node->code) + 1);
-            strlcpy(node->name, minRightNode->name, strlen(node->name) + 1);
+            strlcpy(node->code, minRightNode->code, strlen(minRightNode->code) + 1);
+            strlcpy(node->name, minRightNode->name, strlen(minRightNode->name) + 1);
             node->right = deleteNode(node->right, minRightNode->code);
             updateHeight(node);
             node = balance(node);
@@ -233,6 +235,14 @@ AVL* avlDeleteNode(AVL* tree, char code[])
     if (tree == NULL)
         return NULL;
     tree->root = deleteNode(tree->root, code);
+    return tree;
+}
+
+AVL* createAVL(void)
+{
+    AVL *tree = malloc(sizeof(AVL));
+    if (tree)
+        tree->root = NULL;
     return tree;
 }
 
