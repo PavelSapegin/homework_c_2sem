@@ -138,8 +138,3 @@ void save(List* list, char filepath[])
     }
     fclose(fp);
 }
-
-int main(void)
-{
-    return 0;
-}
