@@ -9,8 +9,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    if (strcmp(argv[1],"--test") == 0)
-    {
+    if (strcmp(argv[1], "--test") == 0) {
         runTests();
         return 0;
     }
@@ -29,16 +28,13 @@ int main(int argc, char* argv[])
         fgets(buff, sizeof(buff), stdin);
         sscanf(buff, "%s %[^\n]", command, parametr);
         if (!strcmp(command, "find")) {
-            char *result = find(tree, parametr);
-            if (result != NULL)
-            {
+            char* result = find(tree, parametr);
+            if (result != NULL) {
                 printf("%s\n", result);
+            } else {
+                printf("Airport with code %s didn't found", parametr);
             }
-            else
-            {
-                printf("Airport with code %s didn't found",parametr);
-            }
-            
+
         } else if (!strcmp(command, "add")) {
             tree = add(tree, parametr);
             printf("Airport %s was added\n", parametr);

@@ -163,23 +163,21 @@ Node* deleteNode(Node* node, char code[])
             return NULL;
         } else {
             Node* minRightNode = findMin(node->right);
-            
+
             free(node->name);
             free(node->code);
 
             node->name = malloc(strlen(minRightNode->name) + 1);
-            if (node->name == NULL)
-            {
+            if (node->name == NULL) {
                 return NULL;
             }
 
             node->code = malloc(strlen(minRightNode->code) + 1);
-            if (node->code == NULL)
-            {
+            if (node->code == NULL) {
                 free(node->name);
                 return NULL;
             }
-            
+
             strlcpy(node->code, minRightNode->code, strlen(minRightNode->code) + 1);
             strlcpy(node->name, minRightNode->name, strlen(minRightNode->name) + 1);
             node->right = deleteNode(node->right, minRightNode->code);
@@ -240,7 +238,7 @@ AVL* avlDeleteNode(AVL* tree, char code[])
 
 AVL* createAVL(void)
 {
-    AVL *tree = malloc(sizeof(AVL));
+    AVL* tree = malloc(sizeof(AVL));
     if (tree)
         tree->root = NULL;
     return tree;

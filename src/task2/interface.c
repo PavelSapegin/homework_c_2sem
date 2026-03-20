@@ -8,7 +8,7 @@ AVL* load(char filepath[])
     if (fp == NULL)
         return NULL;
 
-    AVL *tree = createAVL();
+    AVL* tree = createAVL();
 
     char buff[1024];
     while (fgets(buff, sizeof(buff), fp)) {
@@ -35,7 +35,7 @@ AVL* add(AVL* tree, char str[])
     char name[900];
     if (sscanf(str, "%[^:]:%[^\n]", iata, name) != 2)
         return tree;
-    
+
     if ((strlen(name) == 0) || (strlen(iata) == 0))
         return tree;
 
