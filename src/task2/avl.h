@@ -31,3 +31,5 @@ char* find(AVL* tree, char code[]);
 AVL* delete(AVL* tree, char code[]);
 void saveNode(Node* node, FILE* fp);
 void save(AVL* tree, char filepath[]);
+Node* findMin(Node* node);
+void freeAllNodes(Node* node);

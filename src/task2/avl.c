@@ -16,12 +16,13 @@ Node* createNode(char code[], char name[])
         return NULL;
     }
     if (newNode->name == NULL) {
+        free(newNode->code);
         free(newNode);
         return NULL;
     }
 
-    strlcpy(newNode->code, code, sizeof(newNode->code));
-    strlcpy(newNode->name, name, sizeof(newNode->name));
+    strlcpy(newNode->code, code, strlen(newNode->code) + 1);
+    strlcpy(newNode->name, name, strlen(newNode->name) + 1);
     newNode->left = NULL;
     newNode->right = NULL;
     newNode->height = 0;
@@ -45,6 +46,8 @@ void updateHeight(Node* node)
 
 Node* rotateLeft(Node* node)
 {
+    if (node == NULL)
+        return NULL;
     Node* a = node;
     Node* b = a->right;
     a->right = b->left;
@@ -58,6 +61,8 @@ Node* rotateLeft(Node* node)
 
 Node* rotateRight(Node* node)
 {
+    if (node == NULL)
+        return NULL;
     Node* a = node;
     Node* b = a->left;
     a->left = b->right;
@@ -156,8 +161,25 @@ Node* deleteNode(Node* node, char code[])
             return NULL;
         } else {
             Node* minRightNode = findMin(node->right);
-            strlcpy(node->code, minRightNode->code, sizeof(node->code));
-            strlcpy(node->name, minRightNode->name, sizeof(node->name));
+            
+            free(node->name);
+            free(node->code);
+
+            node->name = malloc(strlen(minRightNode->name) + 1);
+            if (node->name == NULL)
+            {
+                return NULL;
+            }
+
+            node->code = malloc(strlen(minRightNode->code) + 1);
+            if (node->code == NULL)
+            {
+                free(node->name);
+                return NULL;
+            }
+            
+            strlcpy(node->code, minRightNode->code, strlen(node->code) + 1);
+            strlcpy(node->name, minRightNode->name, strlen(node->name) + 1);
             node->right = deleteNode(node->right, minRightNode->code);
             updateHeight(node);
             node = balance(node);

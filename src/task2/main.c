@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
         printf("Error of opening file\n");
         return -1;
     }
-    printf("File was opened sucsessfull\n");
+    printf("File was opened successfull\n");
 
     while (1) {
         char buff[900];
@@ -23,7 +23,16 @@ int main(int argc, char* argv[])
         fgets(buff, sizeof(buff), stdin);
         sscanf(buff, "%s %[^\n]", command, parametr);
         if (!strcmp(command, "find")) {
-            printf("%s\n", find(tree, parametr));
+            char *result = find(tree, parametr);
+            if (result != NULL)
+            {
+                printf("%s\n", result);
+            }
+            else
+            {
+                printf("Airport with code %s didn't found",parametr);
+            }
+            
         } else if (!strcmp(command, "add")) {
             tree = add(tree, parametr);
             printf("Airport %s was added\n", parametr);

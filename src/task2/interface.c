@@ -1,6 +1,7 @@
 #include "avl.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 AVL* load(char filepath[])
 {
@@ -15,7 +16,8 @@ AVL* load(char filepath[])
 
     char buff[1024];
     while (fgets(buff, sizeof(buff), fp)) {
-        add(tree, buff);
+        if (strlen(buff) > 1)
+            add(tree, buff);
     }
     fclose(fp);
 
@@ -26,7 +28,7 @@ char* find(AVL* tree, char code[])
 {
     Node* result = avlFindNode(tree, code);
     if (result == NULL) {
-        return "Airport don't found.\n";
+        return NULL;
     }
     return result->name;
 }
@@ -35,7 +37,12 @@ AVL* add(AVL* tree, char str[])
 {
     char iata[10];
     char name[900];
-    sscanf(str, "%[^:]:%[^\n]", iata, name);
+    if (sscanf(str, "%[^:]:%[^\n]", iata, name) != 2)
+        return tree;
+    
+    if ((strlen(name) == 0) || (strlen(iata) == 0))
+        return tree;
+
     tree = avlInsert(tree, iata, name);
     return tree;
 }
