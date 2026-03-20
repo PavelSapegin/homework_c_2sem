@@ -3,4 +3,6 @@ project(task2 C)
 
 set(CURR_DIR ./src/task2)
 add_executable(airports ${CURR_DIR}/main.c ${CURR_DIR}/avl.c ${CURR_DIR}/interface.c ${CURR_DIR}/test.c)
+add_executable(list_airports ${CURR_DIR}/list.c)
 target_compile_options(airports PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(list_airports PRIVATE -Wall -Wextra -Wpedantic)

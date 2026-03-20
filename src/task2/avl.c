@@ -13,12 +13,11 @@ Node* createNode(char code[], char name[])
     size_t nameSize = strlen(name) + 1;
     newNode->code = malloc(codeSize);
     newNode->name = malloc(nameSize);
-    if (newNode->code == NULL) {
-        free(newNode);
-        return NULL;
-    }
-    if (newNode->name == NULL) {
-        free(newNode->code);
+    if ((newNode->name == NULL) || (newNode->code == NULL)) {
+        if (newNode->code)
+            free(newNode->code);
+        if (newNode->name)
+            free(newNode->name);
         free(newNode);
         return NULL;
     }
@@ -167,19 +166,20 @@ Node* deleteNode(Node* node, char code[])
             free(node->name);
             free(node->code);
 
-            node->name = malloc(strlen(minRightNode->name) + 1);
-            if (node->name == NULL) {
+            size_t nameSize = strlen(minRightNode->name) + 1;
+            size_t codeSize = strlen(minRightNode->code) + 1;
+            node->name = malloc(nameSize);
+            node->code = malloc(codeSize);
+            if ((node->code == NULL) || (node->name == NULL)) {
+                if (node->name)
+                    free(node->name);
+                if (node->code)
+                    free(node->code);
                 return NULL;
             }
 
-            node->code = malloc(strlen(minRightNode->code) + 1);
-            if (node->code == NULL) {
-                free(node->name);
-                return NULL;
-            }
-
-            strlcpy(node->code, minRightNode->code, strlen(minRightNode->code) + 1);
-            strlcpy(node->name, minRightNode->name, strlen(minRightNode->name) + 1);
+            strlcpy(node->code, minRightNode->code, codeSize);
+            strlcpy(node->name, minRightNode->name, nameSize);
             node->right = deleteNode(node->right, minRightNode->code);
             updateHeight(node);
             node = balance(node);
