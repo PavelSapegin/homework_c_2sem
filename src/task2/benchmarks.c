@@ -29,7 +29,8 @@ int main(int argc, char* argv[])
         sscanf(buff, "%[^:]", codes[count++]);
     }
     fclose(fp);
-
+    if (count == 0)
+        return 1;
     TYPE* container = load(filename);
 
     srandom(42);
@@ -45,7 +46,7 @@ int main(int argc, char* argv[])
             add(container, lastAdded);
 
             char codeToFind[10];
-            sprintf(codeToFind, "X%d", (int)(random() % i));
+            sprintf(codeToFind, "X%d", (int)(random() % (i + 1)));
             find(container, codeToFind);
         }
     }
