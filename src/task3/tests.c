@@ -43,7 +43,7 @@ void testMinheapPushPop(void)
     // push elements in random order
     push(heap, 1, 30);
     push(heap, 2, 10);
-    push(heap, 3, 20); 
+    push(heap, 3, 20);
 
     assert(heap->size == 3);
 
@@ -60,7 +60,6 @@ void testMinheapPushPop(void)
     pop(heap, &result);
     assert(result.city == 3 && result.len == 20);
     assert(heap->size == 1);
-
 
     pop(heap, &result);
     assert(result.city == 1 && result.len == 30);
@@ -82,7 +81,6 @@ void testExpansionLogic(void)
 
     int n = 3, k = 2;
     Graph* graph = createGraph(n);
-
 
     graph->graph[0] = pushEdge(graph->graph[0], createEdge(1, 5));
     graph->graph[1] = pushEdge(graph->graph[1], createEdge(0, 5));
@@ -111,8 +109,8 @@ void testExpansionLogic(void)
     // Run expasion test
     runExpansion(graph, heaps, owner, k, n);
 
-    assert(owner[0] == 0); 
-    assert(owner[2] == 1); 
+    assert(owner[0] == 0);
+    assert(owner[2] == 1);
     assert(owner[1] == 0);
 
     freeAll(heaps, graph, owner, k, n);
