@@ -1,7 +1,7 @@
+#include "expansion.h"
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include "expansion.h"
 
 Edge* createEdge(int city, size_t len)
 {
@@ -69,12 +69,10 @@ MinHeap* createMinHeap(void)
     heap->capacity = 10;
 
     MinHeapNode* newNodes = malloc(sizeof(MinHeapNode) * heap->capacity);
-    if (newNodes == NULL)
-    {
+    if (newNodes == NULL) {
         free(heap);
         return NULL;
     }
-
 
     heap->nodes = newNodes;
     return heap;
@@ -94,11 +92,10 @@ MinHeap* push(MinHeap* heap, int newCity, size_t newLen)
         // Safe for cap == 0
         size_t newCapacity = (heap->capacity == 0) ? 10 : heap->capacity * 2;
         MinHeapNode* newNodes = realloc(heap->nodes, newCapacity * sizeof(MinHeapNode));
-        if (newNodes == NULL)
-        {
+        if (newNodes == NULL) {
             return NULL;
         }
-        
+
         heap->capacity = newCapacity;
         heap->nodes = newNodes;
     }
