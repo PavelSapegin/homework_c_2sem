@@ -13,9 +13,10 @@ void testGraphCreation(void)
     // Check allocation
     assert(graph != NULL);
     assert(graph->graph != NULL);
+    assert(graph->n == n);
 
     // Check initialization with NULL
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < graph->n; ++i) {
         assert(graph->graph[i] == NULL);
     }
 
@@ -29,7 +30,7 @@ void testGraphCreation(void)
     assert(graph->graph[0] != NULL);
     assert(graph->graph[0]->to_city == 1);
 
-    deleteGraph(graph, n);
+    deleteGraph(graph);
     printf("PASSED!\n");
 }
 
@@ -113,7 +114,7 @@ void testExpansionLogic(void)
     assert(owner[2] == 1);
     assert(owner[1] == 0);
 
-    freeAll(heaps, graph, owner, k, n);
+    freeAll(heaps, graph, owner, k);
     printf("PASSED!\n");
 }
 

@@ -26,7 +26,7 @@ Edge* pushEdge(Edge* head, Edge* newEdge)
 Graph* createGraph(int n)
 {
     Graph* newGraph = malloc(sizeof(Graph));
-    Edge** newGraphArr = malloc(n * sizeof(Edge*));
+    Edge** newGraphArr = calloc(n, sizeof(Edge*));
     if ((newGraph == NULL) || (newGraphArr == NULL)) {
         if (newGraph) {
             free(newGraph);
@@ -38,16 +38,14 @@ Graph* createGraph(int n)
         return NULL;
     }
 
-    for (int i = 0; i < n; ++i) {
-        newGraphArr[i] = NULL;
-    }
     newGraph->graph = newGraphArr;
+    newGraph->n = n;
     return newGraph;
 }
 
-void deleteGraph(Graph* graph, int n)
+void deleteGraph(Graph* graph)
 {
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < graph->n; ++i) {
         Edge* curr = graph->graph[i];
         while (curr != NULL) {
             Edge* next = curr->next;
@@ -85,15 +83,18 @@ void swap(MinHeapNode* node1, MinHeapNode* node2)
     *node2 = temp;
 }
 
-MinHeap* push(MinHeap* heap, int newCity, size_t newLen)
+bool push(MinHeap* heap, int newCity, size_t newLen)
 {
 
+    if (heap == NULL) {
+        return false;
+    }
     if (heap->size == heap->capacity) {
         // Safe for cap == 0
         size_t newCapacity = (heap->capacity == 0) ? 10 : heap->capacity * 2;
         MinHeapNode* newNodes = realloc(heap->nodes, newCapacity * sizeof(MinHeapNode));
         if (newNodes == NULL) {
-            return NULL;
+            return false; // Return false if realloc fails
         }
 
         heap->capacity = newCapacity;
@@ -110,11 +111,14 @@ MinHeap* push(MinHeap* heap, int newCity, size_t newLen)
         i = (i - 1) / 2;
     }
 
-    return heap;
+    return true;
 }
 
-MinHeap* pop(MinHeap* heap, MinHeapNode* result)
+bool pop(MinHeap* heap, MinHeapNode* result)
 {
+    if (heap->size == 0) {
+        return false;
+    }
     *result = heap->nodes[0];
     heap->nodes[0] = heap->nodes[heap->size - 1];
     heap->size--;
@@ -134,7 +138,7 @@ MinHeap* pop(MinHeap* heap, MinHeapNode* result)
         }
     }
 
-    return heap;
+    return true;
 }
 
 void deleteMinHeap(MinHeap* heap)
@@ -143,12 +147,14 @@ void deleteMinHeap(MinHeap* heap)
     free(heap);
 }
 
-void readEdges(FILE* fp, Graph* graph, int m)
+bool readEdges(FILE* fp, Graph* graph, int m)
 {
 
     for (int i = 0; i < m; ++i) {
         int u, v, len;
-        fscanf(fp, "%d %d %d", &u, &v, &len);
+        if (fscanf(fp, "%d %d %d", &u, &v, &len) != 3) {
+            return false;
+        }
         u--;
         v--;
 
@@ -157,6 +163,8 @@ void readEdges(FILE* fp, Graph* graph, int m)
         graph->graph[u] = pushEdge(graph->graph[u], newEdge2);
         graph->graph[v] = pushEdge(graph->graph[v], newEdge1);
     }
+
+    return true;
 }
 
 void initCapitals(FILE* fp, Graph* graph, int* owner, MinHeap** minHeapArr, int k)
@@ -168,7 +176,9 @@ void initCapitals(FILE* fp, Graph* graph, int* owner, MinHeap** minHeapArr, int 
         owner[--capCity] = i;
         Edge* currEdge = graph->graph[capCity];
         while (currEdge != NULL) {
-            minHeapArr[i] = push(minHeapArr[i], currEdge->to_city, currEdge->len);
+            if (owner[currEdge->to_city] == -1) {
+                push(minHeapArr[i], currEdge->to_city, currEdge->len);
+            }
             currEdge = currEdge->next;
         }
     }
@@ -183,7 +193,7 @@ void runExpansion(Graph* graph, MinHeap** minHeapArr, int* owner, int k, int n)
             MinHeapNode targetNode;
             bool found = false;
             while (minHeapArr[i]->size > 0) {
-                minHeapArr[i] = pop(minHeapArr[i], &targetNode);
+                pop(minHeapArr[i], &targetNode);
                 if (owner[targetNode.city] == -1) {
                     found = true;
                     break;
@@ -197,7 +207,9 @@ void runExpansion(Graph* graph, MinHeap** minHeapArr, int* owner, int k, int n)
                 }
                 Edge* curr = graph->graph[targetNode.city];
                 while (curr != NULL) {
-                    minHeapArr[i] = push(minHeapArr[i], curr->to_city, curr->len);
+                    if (owner[curr->to_city] == -1) {
+                        push(minHeapArr[i], curr->to_city, curr->len);
+                    }
                     curr = curr->next;
                 }
             }
@@ -218,13 +230,13 @@ void print(const int* owner, int k, int n)
     }
 }
 
-void freeAll(MinHeap** minHeapArr, Graph* graph, int* owner, int k, int n)
+void freeAll(MinHeap** minHeapArr, Graph* graph, int* owner, int k)
 {
     for (int i = 0; i < k; ++i) {
         deleteMinHeap(minHeapArr[i]);
     }
 
     free(minHeapArr);
-    deleteGraph(graph, n);
+    deleteGraph(graph);
     free(owner);
 }
